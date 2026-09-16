@@ -1,0 +1,44 @@
+========================================================================
+Splight same-key boomerang/sandwich distinguisher search
+Parameters: r0=1, rm=1, r1=1, w0=6, wm=3, w1=6
+Per-MILP time limit: 20.0 seconds
+Global search time limit: unlimited
+Set parameter Username
+Academic license - for non-commercial use only - expires 2026-10-10
+Read LP format model from file tmp\splight_h_1_1_1.lp
+Reading time = 0.01 seconds
+: 322 rows, 208 columns, 800 nonzeros
+Read LP format model from file tmp\boomerang\splight_h_diff_26680_1788933124765.lp
+Reading time = 0.01 seconds
+: 877 rows, 272 columns, 3776 nonzeros
+Read LP format model from file tmp\boomerang\splight_h_diff_26680_1788933124776.lp
+Reading time = 0.01 seconds
+: 883 rows, 272 columns, 3776 nonzeros
+
+Accepted upper/lower differential trails saved.
+
+###########################
+Summary of the results:
+Upper trail:
+Rounds  x                 y         l         RK        ak        z         pr     
+----------------------------------------------------------------------------------
+0       0000000001090000  00000000  00000000  00000000  00000000  00000000  -0     
+1       0900000100000000  none      none      none      none      none      none   
+Weight: -0.00
+###########################
+Sandwich 1 rounds in the middle with 0 active S-boxes
+###########################
+Lower trail:
+Rounds  x                 y         l         RK        ak        z         pr     
+----------------------------------------------------------------------------------
+0       0000000000000200  00000000  00000000  00000000  00000000  00000000  -0     
+1       0002000000000000  none      none      none      none      none      none   
+Weight: -0.00
+---------------------------
+differential characteristic of the upper trail: 2^(-0.00)
+differential characteristic of the lower trail: 2^(-0.00)
+Total probability = p^2*q^2*r = 2^(-0.00) x 2^(-0.00) x r
+2^(-0.00) <= Total probability <= 2^(-0.00)
+
+To compute the accurate value of total probability, r should be evaluated experimentally or using the (F)BCT framework
+Total solving time: 0.063000 seconds

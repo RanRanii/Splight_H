@@ -1,0 +1,2 @@
+该组合复用了已存在的结果 JSON，但未找到此前保存的 terminal log。
+结果目录：results/2-6-2

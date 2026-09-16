@@ -1,0 +1,10 @@
+# Lower differential trail
+
+- Rounds: 1
+- Round offset: 2
+- Weight: 0.00
+
+| Round | x | y | l | RK | ak | z | pr |
+|---:|---|---|---|---|---|---|---:|
+| 0 | 0000000000000200 | 00000000 | 00000000 | 00000000 | 00000000 | 00000000 | -0 |
+| 1 | 0002000000000000 | none | none | none | none | none | none |

@@ -1,0 +1,13 @@
+Rounds: 2
+Mode: 0
+Direction: forward
+Status: OPTIMAL
+LP file: tmp\boomerang\splight_h_diff_3304_1789042287340.lp
+Total CLI time: 0.187744 seconds
+
+Rounds  x                 y         l         RK        ak        z         pr
+----------------------------------------------------------------------------------
+0       0004000040000000  00040000  40000000  00000000  40000000  40000000  -4     
+1       0000000000040000  00000000  00000000  00000000  00000000  00000000  -0     
+2       0400000000000000  none      none      none      none      none      none   
+Weight: -4.00

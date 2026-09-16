@@ -1,0 +1,68 @@
+{
+  "truncated_id": 1,
+  "candidate_id": 1,
+  "side": "upper",
+  "weight": 0.0,
+  "round_offset": 0,
+  "milp_status": "OPTIMAL",
+  "smt_status": "SAT",
+  "verification_time_seconds": 0.015877800062298775,
+  "reason": null,
+  "nogood_constraint": null,
+  "fixed_diffs": {
+    "dX0": "0000000001090000",
+    "dY0": "00000000",
+    "dLIN0": "00000000",
+    "dAK0": "00000000",
+    "dZ0": "00000000",
+    "dX1": "0900000100000000"
+  },
+  "trail": {
+    "rounds": 1,
+    "round_offset": 0,
+    "fixed_diffs": {
+      "dX0": "0000000001090000",
+      "dY0": "00000000",
+      "dLIN0": "00000000",
+      "dAK0": "00000000",
+      "dZ0": "00000000",
+      "dX1": "0900000100000000"
+    }
+  },
+  "characteristic": {
+    "x_0": "0000000001090000",
+    "y_0": "00000000",
+    "l_0": "00000000",
+    "rk_0": "00000000",
+    "ak_0": "00000000",
+    "z_0": "00000000",
+    "pr_0": "-0",
+    "x_1": "0900000100000000",
+    "y_1": "none",
+    "l_1": "none",
+    "rk_1": "none",
+    "ak_1": "none",
+    "z_1": "none",
+    "pr_1": "none",
+    "total_weight": "0.00",
+    "nrounds": 1,
+    "round_offset": 0
+  },
+  "witness": {
+    "state_A_0": "078AB6BB00000000",
+    "state_B_0": "078AB6BB01090000",
+    "state_A_final": "BBBBBBBB078AB6BB",
+    "state_B_final": "B2BBBBBA078AB6BB",
+    "master_key": "020EDEE7442E44BE0000000000000000",
+    "fixed_diffs_actual": {
+      "dX0": "0000000001090000",
+      "dY0": "00000000",
+      "dLIN0": "00000000",
+      "dAK0": "00000000",
+      "dZ0": "00000000",
+      "dX1": "0900000100000000"
+    },
+    "concrete_replay": "PASS"
+  },
+  "concrete_replay": "PASS"
+}

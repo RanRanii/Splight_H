@@ -1,0 +1,21 @@
+Set parameter Username
+Academic license - for non-commercial use only - expires 2026-10-10
+Read LP format model from file tmp\boomerang\splight_h_diff_3268_1789042376661.lp
+Reading time = 0.01 seconds
+: 1993 rows, 688 columns, 10528 nonzeros
+
+The probability of the best differential characteristic: 2^-(8.0)
+
+Differential trail:
+
+Rounds  x                 y         l         RK        ak        z         pr     
+----------------------------------------------------------------------------------
+0       0200000000600000  02000000  00200000  00000000  00200000  00600000  -4     
+1       0000000002000000  00000000  00000000  00000000  00000000  00000000  -0     
+2       0000000200000000  00000002  00002000  00000000  00002000  00002000  -4     
+3       0020000000000002  none      none      none      none      none      none   
+Weight: -8.00
+Time used: 1.08
+Saved result JSON: E:\Codex_project\Feistel-Boomerang自动化搜索\Test\Splight-H\result_diff\round_3\round_3.json
+Saved result text: E:\Codex_project\Feistel-Boomerang自动化搜索\Test\Splight-H\result_diff\round_3\round_3.txt
+Saved terminal log: E:\Codex_project\Feistel-Boomerang自动化搜索\Test\Splight-H\result_diff\round_3\terminal_print.txt

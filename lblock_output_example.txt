@@ -1,0 +1,223 @@
+PS E:\Codex_project\Feistel-Boomerang自动化搜索\Paper_code\comeback-main\lblock> C:/Users/27243/AppData/Local/Programs/Python/Python312/python.exe e:/Codex_project/Feistel-Boomerang自动化搜索/Paper_code/comeback-main/lblock/boom.py
+Set parameter Username
+Academic license - for non-commercial use only - expires 2026-10-10
+Read LP format model from file lblock_4_8_4.lp
+Reading time = 0.01 seconds
+: 962 rows, 480 columns, 2336 nonzeros
+Set parameter OutputFlag to value 1
+Set parameter PoolSearchMode to value 2
+Set parameter PoolSolutions to value 10
+Gurobi Optimizer version 12.0.0 build v12.0.0rc1 (win64 - Windows 10.0 (19045.2))
+
+CPU model: Intel(R) Core(TM) i7-10700 CPU @ 2.90GHz, instruction set [SSE2|AVX|AVX2]
+Thread count: 8 physical cores, 16 logical processors, using up to 16 threads
+
+Non-default parameters:
+PoolSearchMode  2
+
+Optimize a model with 962 rows, 480 columns and 2336 nonzeros
+Model fingerprint: 0xa9722659
+Variable types: 0 continuous, 480 integer (480 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  Objective range  [3e+00, 6e+00]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+00]
+Found heuristic solution: objective 576.0000000
+Presolve removed 321 rows and 240 columns
+Presolve time: 0.02s
+Presolved: 641 rows, 240 columns, 1632 nonzeros
+Variable types: 0 continuous, 240 integer (240 binary)
+Found heuristic solution: objective 384.0000000
+Found heuristic solution: objective 288.0000000
+
+Root relaxation: objective 9.218629e+00, 207 iterations, 0.01 seconds (0.00 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0    9.21863    0  166  288.00000    9.21863  96.8%     -    0s
+H    0     0                      96.0000000    9.21863  90.4%     -    0s
+H    0     0                      87.0000000   32.00000  63.2%     -    0s
+H    0     0                      81.0000000   32.00000  60.5%     -    0s
+     0     0   32.00000    0  157   81.00000   32.00000  60.5%     -    0s
+     0     0   33.64840    0  189   81.00000   33.64840  58.5%     -    0s
+     0     0   34.07035    0  199   81.00000   34.07035  57.9%     -    0s
+     0     0   34.10269    0  192   81.00000   34.10269  57.9%     -    0s
+     0     0   34.11572    0  192   81.00000   34.11572  57.9%     -    0s
+     0     0   34.67653    0  203   81.00000   34.67653  57.2%     -    0s
+     0     0   35.04545    0  202   81.00000   35.04545  56.7%     -    0s
+     0     0   35.04545    0  198   81.00000   35.04545  56.7%     -    0s
+     0     0   35.76923    0  196   81.00000   35.76923  55.8%     -    0s
+     0     0   37.36517    0  178   81.00000   37.36517  53.9%     -    0s
+     0     0   37.96444    0  170   81.00000   37.96444  53.1%     -    0s
+     0     0   37.96444    0  160   81.00000   37.96444  53.1%     -    0s
+     0     0   38.38583    0  176   81.00000   38.38583  52.6%     -    0s
+     0     0   39.05769    0  180   81.00000   39.05769  51.8%     -    0s
+     0     0   39.05769    0  190   81.00000   39.05769  51.8%     -    0s
+     0     0   40.27152    0  185   81.00000   40.27152  50.3%     -    0s
+     0     0   41.42609    0  185   81.00000   41.42609  48.9%     -    0s
+     0     0   41.42609    0  185   81.00000   41.42609  48.9%     -    0s
+     0     2   41.42609    0  185   81.00000   41.42609  48.9%     -    0s
+
+Cutting planes:
+  Gomory: 4
+  Implied bound: 90
+  Clique: 15
+  MIR: 8
+  Zero half: 5
+  RLT: 4
+  Relax-and-lift: 4
+  BQP: 9
+
+Explored 694 nodes (31078 simplex iterations) in 0.54 seconds (0.51 work units)
+Thread count was 16 (of 16 available processors)
+
+Solution count 10: 81 81 81 ... 81
+No other solutions better than 81
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 8.100000000000e+01, best bound 8.100000000000e+01, gap 0.0000%
+Number of active S-boxes: 81.0
+
+Upper Truncated Trail:
+
+0001010000011010
+0010000000010100
+0100000000100000
+0000000001000000
+0000000100000000
+0000010000000001
+0000110000000100
+0001101000001100
+0111001100011010
+1111110101110011
+1111111111111101
+1111111111111111
+1111111111111111
+
+++++++++++++++++
+################
+Lower Truncated Trail:
+
+1111111111111111
+1111111111111111
+1111011111111111
+0101011111110111
+0001011001010111
+0001010000010110
+0001000000010100
+0001000000010000
+0000000000010000
+0100000000000000
+1000000001000000
+0010000110000000
+0001011000100001
+
+################
+################
+Middle Part:
+
+0*0*0*0*0*0*0*1*
+0*0*0*0*0*1*0*0*
+0*0*0*0*0*1*0*0*
+0*0*0*1*0*0*1*0*
+0*0*0*1*0*0*1*0*
+0*0*0*1*0*1*0*0*
+0*0*0*1*0*0*0*0*
+0*0*0*1*0*0*0*0*
+
+Number of common active S-boxes: 11
+Read LP format model from file lblock_nr_4.lp
+Reading time = 0.01 seconds
+: 1965 rows, 544 columns, 7508 nonzeros
+
+The probability of the best differential characteristic: 2^-(8.0)
+
+Differential trail:
+
+Rounds  x                 pr     
+--------------------------------
+0       0004060000024010  -4                
+1       0040000000040600  -2                
+2       0400000000400000  -2                
+3       0000000004000000  -0                
+4       0000000400000000  none              
+
+Weight: -8.00
+Time used: 0.03
+Read LP format model from file lblock_nr_4.lp
+Reading time = 0.01 seconds
+: 1989 rows, 544 columns, 7532 nonzeros
+Set parameter TimeLimit to value 18000
+Set parameter PoolSearchMode to value 2
+Set parameter PoolSolutions to value 1
+
+
+Current weight: 8.0
+Number of trails: 1
+        Current Probability: 2^(-8.0)
+Time used = 0.0040 seconds
+
+Read LP format model from file lblock_nr_4.lp
+Reading time = 0.01 seconds
+: 1965 rows, 544 columns, 7508 nonzeros
+
+The probability of the best differential characteristic: 2^-(8.0)
+
+Differential trail:
+
+Rounds  x                 pr     
+--------------------------------
+0       0000000000050000  -0                
+1       0500000000000000  -2                
+2       4000000005000000  -2                
+3       0050000540000000  -4                
+4       0002044000500005  none              
+
+Weight: -8.00
+Time used: 0.01
+Read LP format model from file lblock_nr_4.lp
+Reading time = 0.01 seconds
+: 1989 rows, 544 columns, 7532 nonzeros
+Set parameter TimeLimit to value 18000
+Set parameter PoolSearchMode to value 2
+Set parameter PoolSolutions to value 1
+
+
+Current weight: 8.0
+Number of trails: 1
+        Current Probability: 2^(-8.0)
+Time used = 0.0067 seconds
+
+###########################
+Summary of the results:
+Upper trail:
+Rounds  x                 pr     
+--------------------------------
+0       0004060000024010  -4                
+1       0040000000040600  -2                
+2       0400000000400000  -2                
+3       0000000004000000  -0                
+4       0000000400000000  none              
+
+Weight: -8.00
+###########################
+Sandwich 8 rounds in the middle with 11 active S-boxes
+###########################
+Lower trail:
+Rounds  x                 pr     
+--------------------------------
+0       0000000000050000  -0                
+1       0500000000000000  -2                
+2       4000000005000000  -2                
+3       0050000540000000  -4                
+4       0002044000500005  none              
+
+Weight: -8.00
+---------------------------
+differential effect of the upper trail: 2^(-8.00)
+differential effect of the lower trail: 2^(-8.00)
+Total probability = p^2*q^2*r = 2^(-16.00) x 2^(-16.00) x r
+2^(-59.50) <= Total probability <= 2^(-54.00)
+To compute the accurate value of total probability, r should be evaluated experimentally or using the (F)BCT framework

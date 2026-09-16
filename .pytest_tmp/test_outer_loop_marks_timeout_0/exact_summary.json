@@ -1,0 +1,64 @@
+{
+  "exact_verify_enabled": true,
+  "result": "SAT",
+  "accepted_truncated_id": 2,
+  "accepted_weight_upper": 0,
+  "accepted_weight_lower": 0,
+  "truncated_paths_tested": 2,
+  "truncated_paths": [
+    {
+      "truncated_id": 1,
+      "raw_truncated_id": 1,
+      "result": "TIMEOUT_SKIPPED",
+      "reason": "Z3_TIMEOUT",
+      "elapsed_seconds": 0.0,
+      "upper": {
+        "result": "TIMEOUT_SKIPPED",
+        "reason": "Z3_TIMEOUT",
+        "candidate_count": 1,
+        "rejected_candidates": 0,
+        "unknown_candidates": 1
+      },
+      "lower": null,
+      "truncated_nogood": "truncated_nogood_0001"
+    },
+    {
+      "truncated_id": 2,
+      "raw_truncated_id": 2,
+      "result": "SAT",
+      "elapsed_seconds": 0.0,
+      "upper": {
+        "result": "SAT",
+        "candidate_count": 1,
+        "rejected_candidates": 0,
+        "unknown_candidates": 0,
+        "accepted": {
+          "weight": 0,
+          "characteristic": {
+            "nrounds": 1,
+            "total_weight": "0",
+            "x_0": "0000000000000000",
+            "x_1": "0000000000000000"
+          },
+          "side": "upper"
+        }
+      },
+      "lower": {
+        "result": "SAT",
+        "candidate_count": 1,
+        "rejected_candidates": 0,
+        "unknown_candidates": 0,
+        "accepted": {
+          "weight": 0,
+          "characteristic": {
+            "nrounds": 1,
+            "total_weight": "0",
+            "x_0": "0000000000000000",
+            "x_1": "0000000000000000"
+          },
+          "side": "lower"
+        }
+      }
+    }
+  ]
+}

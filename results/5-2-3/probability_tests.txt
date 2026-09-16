@@ -1,0 +1,41 @@
+
+========================================================================
+搜索后的概率实验
+
+------------------------------------------------------------------------
+上路径差分概率测试
+mode          : diff
+data size     : 2^(26)
+skip reason   : data size 2^(26) >= 2^(16); skip test
+
+------------------------------------------------------------------------
+下路径差分概率测试
+mode          : diff
+rounds        : 3
+input diff    : 0000000800008000
+output diff   : 0000800000000800 (L_r||R_r)
+trials        : 1
+data size     : 2^(10)
+trial 0001: right=13 total=2^(10) probability=0.0126953125
+------------------------------------------------------------------------
+aggregate right pairs/quartets : 13
+aggregate total pairs/quartets : 2^(10)
+estimated probability          : 0.0126953125
+log2(probability)              : -6.299560
+
+------------------------------------------------------------------------
+Em 中间 boomerang switch 概率测试
+mode          : boomerang switch
+scope         : Em only
+rounds        : 2
+input diff    : 0020000000000002 (Delta from upper output)
+output diff   : 0000000800008000 (nabla from lower input)
+common active : 3
+data size     : 2^(12)
+trial 0001: returned=145 total=2^(12) probability=0.035400390625
+------------------------------------------------------------------------
+aggregate returned quartets     : 145
+aggregate total quartets        : 2^(12)
+estimated probability           : 0.035400390625
+log2(probability)               : -4.820091
+Hadipour interval log2          : [-7.50, -6.00]

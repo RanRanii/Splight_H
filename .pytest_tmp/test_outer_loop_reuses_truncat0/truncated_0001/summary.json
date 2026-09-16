@@ -1,0 +1,15 @@
+{
+  "truncated_id": 1,
+  "raw_truncated_id": 1,
+  "result": "CONCRETE_EXHAUSTED",
+  "reason": null,
+  "elapsed_seconds": 0.0,
+  "upper": {
+    "result": "CONCRETE_EXHAUSTED",
+    "candidate_count": 1,
+    "rejected_candidates": 1,
+    "unknown_candidates": 0
+  },
+  "lower": null,
+  "truncated_nogood": "truncated_nogood_0001"
+}

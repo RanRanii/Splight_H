@@ -1,0 +1,123 @@
+========================================================================
+Splight same-key boomerang/sandwich distinguisher search
+Parameters: r0=7, rm=3, r1=4, w0=6, wm=3, w1=6
+Per-MILP time limit: 1200.0 seconds
+Global search time limit: unlimited
+============================================================
+Exact verification enabled: two-level truncated/concrete search
+============================================================
+Set parameter Username
+Academic license - for non-commercial use only - expires 2026-10-10
+Read LP format model from file tmp\splight_h_7_3_4.lp
+Reading time = 0.01 seconds
+: 1302 rows, 760 columns, 3226 nonzeros
+Read LP format model from file tmp\boomerang\splight_h_diff_25528_1789042350349.lp
+Reading time = 0.02 seconds
+: 5605 rows, 1520 columns, 25664 nonzeros
+Read LP format model from file tmp\boomerang\splight_h_diff_25528_1789042350383.lp
+Reading time = 0.01 seconds
+: 3295 rows, 896 columns, 14720 nonzeros
+
+Qualified truncated path #1 (raw candidate #1)
+
+Upper exact candidate #1
+MILP weight : 58.0
+SMT status  : UNSAT
+Action      : block full concrete trail and re-optimize
+
+Upper exact candidate #2
+MILP weight : 58.0
+SMT status  : UNSAT
+Action      : block full concrete trail and re-optimize
+
+Upper exact candidate #3
+MILP weight : 58.0
+SMT status  : UNSAT
+Action      : block full concrete trail and re-optimize
+
+Upper exact candidate #4
+MILP weight : 58.0
+SMT status  : UNSAT
+Action      : block full concrete trail and re-optimize
+
+Upper exact candidate #5
+MILP weight : 58.0
+SMT status  : UNSAT
+Action      : block full concrete trail and re-optimize
+
+Upper exact candidate #6
+MILP weight : 58.0
+SMT status  : UNSAT
+Action      : block full concrete trail and re-optimize
+
+Upper exact candidate #7
+MILP weight : 58.0
+SMT status  : UNSAT
+Action      : block full concrete trail and re-optimize
+
+Upper exact candidate #8
+MILP weight : 58.0
+SMT status  : UNSAT
+Action      : block full concrete trail and re-optimize
+
+Upper exact candidate #9
+MILP weight : 58.0
+SMT status  : UNSAT
+Action      : block full concrete trail and re-optimize
+
+Upper exact candidate #10
+MILP weight : 58.0
+SMT status  : UNSAT
+Action      : block full concrete trail and re-optimize
+
+Upper exact candidate #11
+MILP weight : 58.0
+SMT status  : UNSAT
+Action      : block full concrete trail and re-optimize
+
+Upper exact candidate #12
+MILP weight : 58.0
+SMT status  : SAT
+Replay      : PASS
+
+Lower exact candidate #1
+MILP weight : 16.0
+SMT status  : SAT
+Replay      : PASS
+
+Accepted upper/lower differential trails saved.
+
+###########################
+Summary of the results:
+Upper trail:
+Rounds  x                 y         l         RK        ak        z         pr     
+----------------------------------------------------------------------------------
+0       000A00006208000A  00020000  20000000  00000000  20000000  60000000  -4     
+1       08000A02000A0000  08000202  00802020  00000000  00802020  00808080  -12    
+2       8A80800008000A02  8280A000  08A0AA0A  00000000  08A0AA0A  08202202  -18    
+3       202800008A808000  80880000  88800000  00000000  88800000  8A800000  -12    
+4       0080000020280000  00A00000  A0AA0000  00000000  A0AA0000  20220000  -8     
+5       0A00000000800000  02000000  00200000  00000000  00200000  00800000  -4     
+6       000000000A000000  00000000  00000000  00000000  00000000  00000000  -0     
+7       0000000A00000000  none      none      none      none      none      none   
+Weight: -58.00
+###########################
+Sandwich 3 rounds in the middle with 5 active S-boxes
+###########################
+Lower trail:
+Rounds  x                 y         l         RK        ak        z         pr     
+----------------------------------------------------------------------------------
+0       0000000200002000  00000002  00002000  00000000  00002000  00002000  -4     
+1       0000000000000002  00000000  00000000  00000000  00000000  00000000  -0     
+2       0000020000000000  00000200  00000020  00000000  00000020  00000020  -4     
+3       0000200000000200  00002000  00002202  00000000  00002202  00002202  -8     
+4       0020020000002000  none      none      none      none      none      none   
+Weight: -16.00
+---------------------------
+differential characteristic of the upper trail: 2^(-58.00)
+differential characteristic of the lower trail: 2^(-16.00)
+Total probability = p^2*q^2*r = 2^(-116.00) x 2^(-32.00) x r
+2^(-160.50) <= Total probability <= 2^(-158.00)
+
+To compute the accurate value of total probability, r should be evaluated experimentally or using the (F)BCT framework
+Total solving time: 19.281000 seconds

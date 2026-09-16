@@ -1,0 +1,46 @@
+========================================================================
+Splight same-key boomerang/sandwich distinguisher search
+Parameters: r0=2, rm=3, r1=2, w0=6, wm=3, w1=6
+Per-MILP time limit: 1200.0 seconds
+Global search time limit: unlimited
+Set parameter Username
+Academic license - for non-commercial use only - expires 2026-10-10
+Read LP format model from file tmp\splight_h_2_3_2.lp
+Reading time = 0.02 seconds
+: 826 rows, 480 columns, 1980 nonzeros
+Read LP format model from file tmp\boomerang\splight_h_diff_17612_1789542787355.lp
+Reading time = 0.01 seconds
+: 1692 rows, 480 columns, 7424 nonzeros
+Read LP format model from file tmp\boomerang\splight_h_diff_17612_1789542787383.lp
+Reading time = 0.01 seconds
+: 1692 rows, 480 columns, 7424 nonzeros
+
+Accepted upper/lower differential trails saved.
+
+###########################
+Summary of the results:
+Upper trail:
+Rounds  x                 y         l         RK        ak        z         pr     
+----------------------------------------------------------------------------------
+0       0000000200002000  00000002  00002000  00000000  00002000  00002000  -4     
+1       0000000000000002  00000000  00000000  00000000  00000000  00000000  -0     
+2       0000020000000000  none      none      none      none      none      none   
+Weight: -4.00
+###########################
+Sandwich 3 rounds in the middle with 1 active S-boxes
+###########################
+Lower trail:
+Rounds  x                 y         l         RK        ak        z         pr     
+----------------------------------------------------------------------------------
+0       0000000002000000  00000000  00000000  00000000  00000000  00000000  -0     
+1       0000000200000000  00000002  00002000  00000000  00002000  00002000  -4     
+2       0020000000000002  none      none      none      none      none      none   
+Weight: -4.00
+---------------------------
+differential characteristic of the upper trail: 2^(-4.00)
+differential characteristic of the lower trail: 2^(-4.00)
+Total probability = p^2*q^2*r = 2^(-8.00) x 2^(-8.00) x r
+2^(-18.50) <= Total probability <= 2^(-18.00)
+
+To compute the accurate value of total probability, r should be evaluated experimentally or using the (F)BCT framework
+Total solving time: 0.359000 seconds

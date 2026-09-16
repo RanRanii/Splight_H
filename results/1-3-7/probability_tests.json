@@ -1,0 +1,60 @@
+{
+  "parameters": {
+    "seed": 20260702,
+    "max_data_size": "2^(16)",
+    "sample_rule": "diff data size = 2^(ceil(weight)+2); Em data size = max(2^12, 2^(2*CAS+2)); skip when data size >= 2^16"
+  },
+  "diff": {
+    "upper": {
+      "result": {
+        "mode": "diff",
+        "rounds": 1,
+        "input_diff": "0008000080000000",
+        "output_diff": "0000000000080000",
+        "key_diff": "00D000000D000000D00000000000000D",
+        "trials": 1,
+        "batch_size": 64,
+        "right": 7,
+        "total": 64,
+        "probability": 0.109375,
+        "skipped": false,
+        "data_size_exponent": 6,
+        "data_size": "2^(6)",
+        "log2_probability": -3.192645077942396,
+        "theory_log2": -4.0,
+        "theory_probability": 0.0625,
+        "delta_log2_exp_minus_theory": 0.8073549220576042
+      }
+    },
+    "lower": {
+      "result": {
+        "kind": "diff",
+        "skipped": true,
+        "data_size_exponent": 50,
+        "data_size": "2^(50)",
+        "reason": "data size 2^(50) >= 2^(16); skip test"
+      }
+    }
+  },
+  "em_boomerang": {
+    "trials": 4096,
+    "returned_count": 143,
+    "estimated_r": 0.034912109375,
+    "log2_r": -4.840128663221611,
+    "mode": "boomerang switch",
+    "test_scope": "Em only",
+    "input_diff_delta": "0000000000080000",
+    "output_diff_nabla": "20000aa008022082",
+    "delta_source": "diff_upper_trail[x_1]",
+    "nabla_source": "diff_lower_trail[x_0]",
+    "rm": 3,
+    "common_active_sboxes": 2,
+    "hadipour_upper_log2": -4.0,
+    "hadipour_lower_log2": -5.0,
+    "data_size_exponent": 12,
+    "data_size": "2^(12)",
+    "skipped": false,
+    "delta_log2_vs_upper_bound": -0.840128663221611,
+    "delta_log2_vs_lower_bound": 0.15987133677838905
+  }
+}

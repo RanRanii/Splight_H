@@ -1,0 +1,249 @@
+Set parameter Username
+Academic license - for non-commercial use only - expires 2026-10-10
+Read LP format model from file tmp\splight_h_3_4_4.lp
+Reading time = 0.01 seconds
+: 1304 rows, 726 columns, 3164 nonzeros
+Set parameter OutputFlag to value 1
+Set parameter TimeLimit to value 120
+Set parameter PoolSearchMode to value 2
+Set parameter PoolSolutions to value 10
+Gurobi Optimizer version 12.0.0 build v12.0.0rc1 (win64 - Windows 10.0 (19045.2))
+
+CPU model: Intel(R) Core(TM) i7-10700 CPU @ 2.90GHz, instruction set [SSE2|AVX|AVX2]
+Thread count: 8 physical cores, 16 logical processors, using up to 16 threads
+
+Non-default parameters:
+TimeLimit  120
+PoolSearchMode  2
+
+Optimize a model with 1304 rows, 726 columns and 3164 nonzeros
+Model fingerprint: 0xf2147253
+Variable types: 0 continuous, 726 integer (726 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  Objective range  [3e+00, 6e+00]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+00]
+Found heuristic solution: objective 864.0000000
+Presolve removed 568 rows and 454 columns
+Presolve time: 0.01s
+Presolved: 736 rows, 272 columns, 1954 nonzeros
+Variable types: 0 continuous, 272 integer (272 binary)
+Found heuristic solution: objective 648.0000000
+Found heuristic solution: objective 465.0000000
+Found heuristic solution: objective 393.0000000
+
+Root relaxation: objective 7.541554e+00, 222 iterations, 0.00 seconds (0.00 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0    7.54155    0  147  393.00000    7.54155  98.1%     -    0s
+H    0     0                     219.0000000    7.54155  96.6%     -    0s
+H    0     0                     207.0000000    7.54155  96.4%     -    0s
+H    0     0                     204.0000000    7.54155  96.3%     -    0s
+H    0     0                     156.0000000   20.74159  86.7%     -    0s
+     0     0   20.74159    0  183  156.00000   20.74159  86.7%     -    0s
+     0     0   20.93529    0  174  156.00000   20.93529  86.6%     -    0s
+     0     0   21.28252    0  176  156.00000   21.28252  86.4%     -    0s
+     0     0   21.28252    0  163  156.00000   21.28252  86.4%     -    0s
+     0     0   21.48369    0  169  156.00000   21.48369  86.2%     -    0s
+     0     0   21.48369    0  169  156.00000   21.48369  86.2%     -    0s
+     0     0   24.25900    0  185  156.00000   24.25900  84.4%     -    0s
+     0     0   24.29172    0  189  156.00000   24.29172  84.4%     -    0s
+     0     0   24.29172    0  194  156.00000   24.29172  84.4%     -    0s
+     0     0   24.96721    0  201  156.00000   24.96721  84.0%     -    0s
+     0     0   27.91388    0  203  156.00000   27.91388  82.1%     -    0s
+     0     0   27.93680    0  198  156.00000   27.93680  82.1%     -    0s
+H    0     0                     144.0000000   27.93680  80.6%     -    0s
+     0     0   27.93680    0  204  144.00000   27.93680  80.6%     -    0s
+     0     0   27.93680    0  206  144.00000   27.93680  80.6%     -    0s
+     0     0   28.95342    0  199  144.00000   28.95342  79.9%     -    0s
+     0     0   28.98000    0  201  144.00000   28.98000  79.9%     -    0s
+     0     0   28.98000    0  199  144.00000   28.98000  79.9%     -    0s
+     0     0   29.13944    0  197  144.00000   29.13944  79.8%     -    0s
+     0     0   29.13944    0  197  144.00000   29.13944  79.8%     -    0s
+     0     2   29.13944    0  197  144.00000   29.13944  79.8%     -    0s
+*  146   155              20     123.0000000   29.13944  76.3%   105    0s
+H  249   227                     120.0000000   55.64133  53.6%  94.0    0s
+*  436   282              22     117.0000000   75.86403  35.2%  81.3    0s
+
+Optimal solution found at node 879 - now completing solution pool...
+
+    Nodes    |    Current Node    |      Pool Obj. Bounds     |     Work
+             |                    |   Worst                   |
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+   879     0     cutoff   28       120.00000  120.00000  0.00%  58.2    0s
+
+Cutting planes:
+  Gomory: 3
+  Cover: 10
+  Implied bound: 59
+  Clique: 7
+  MIR: 2
+  Inf proof: 1
+  Zero half: 7
+  Mod-K: 3
+  RLT: 29
+  Relax-and-lift: 21
+  BQP: 1
+
+Explored 1034 nodes (52882 simplex iterations) in 0.64 seconds (0.62 work units)
+Thread count was 16 (of 16 available processors)
+
+Solution count 10: 117 117 120 ... 120
+No other solutions better than 120
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.170000000000e+02, best bound 1.170000000000e+02, gap 0.0000%
+Number of active S-boxes: 117.0
+Total time to find the trail: 0.64 seconds
+
+Upper Truncated Trail:
+
+Rounds  x                 y         l         z        
+--------------------------------------------------------
+0       0000100001001101  00001000  00001101  00001101 
+1       0000000100001000  00000001  00001000  00001000 
+2       0000000000000001  00000000  00000000  00000000 
+3       0000010000000000  00000100  00000010  00000010 
+4       0000100000000100  00001000  00001101  00001101 
+5       0011010000001000  00110100  10110010  10110010 
+6       1110101000110100  11101010  11111111  11111111 
+7       1111111111101010  none      none      none     
+
+++++++++++++++++
+################
+Lower Truncated Trail:
+
+Rounds  x                 y         l         z        
+--------------------------------------------------------
+0       1101111111111111  11011111  11111111  11111111 
+1       1000111111011111  10001111  11011111  11011111 
+2       0000101110001111  00001011  00001111  00001111 
+3       0000001000001011  00000010  00001011  00001011 
+4       0000010000000010  00000100  00000010  00000010 
+5       0000000000000100  00000000  00000000  00000000 
+6       0001000000000000  00010000  10000000  10000000 
+7       0000001000010000  00000010  00001011  00001011 
+8       0110110000000010  none      none      none     
+
+################
+################
+Middle Part:
+
+0*0*0*0*0*1*0*0*0*0*0*0*0*0*1*0*
+0*0*0*0*1*0*0*0*0*0*0*0*1*1*0*1*
+0*0*0*0*0*0*0*0*0*0*0*0*0*0*1*0*
+0*0*0*0*0*0*1*0*0*0*0*0*1*0*1*1*
+
+Number of common active S-boxes: 11
+Read LP format model from file tmp\boomerang\splight_h_diff_19124_1782979093586.lp
+Reading time = 0.03 seconds
+: 1425 rows, 5224 columns, 28488 nonzeros
+
+The probability of the best differential characteristic: 2^-(12.0)
+
+Differential trail:
+
+Rounds  x                 y         l         z         pr     
+----------------------------------------------------------------
+0       0000200008008808  00002000  00002202  00008808  -8     
+1       0000000800002000  0000000A  0000A000  00002000  -4     
+2       0000000000000008  00000000  00000000  00000000  -0     
+3       0000080000000000  none      none      none      none   
+Weight: -12.00
+Time used: 0.04
+Read LP format model from file tmp\boomerang\splight_h_diff_19124_1782979093825.lp
+Reading time = 0.03 seconds
+: 1449 rows, 5224 columns, 28512 nonzeros
+Current weight: 12.0
+Number of trails: 1
+	Current Probability: 2^(-12.0)
+Read LP format model from file tmp\boomerang\splight_h_diff_19124_1782979094036.lp
+Reading time = 0.04 seconds
+: 1861 rows, 6944 columns, 37924 nonzeros
+
+The probability of the best differential characteristic: 2^-(16.0)
+
+Differential trail:
+
+Rounds  x                 y         l         z         pr     
+----------------------------------------------------------------
+0       0000010000000010  00000100  00000010  00000010  -4     
+1       0000000000000100  00000000  00000000  00000000  -0     
+2       0001000000000000  00010000  10000000  10000000  -4     
+3       0000001000010000  00000010  00001011  00001011  -8     
+4       0110110000000010  none      none      none      none   
+Weight: -16.00
+Time used: 0.06
+Read LP format model from file tmp\boomerang\splight_h_diff_19124_1782979094388.lp
+Reading time = 0.03 seconds
+: 1889 rows, 6944 columns, 37952 nonzeros
+Current weight: 16.0
+Number of trails: 1
+	Current Probability: 2^(-16.0)
+###########################
+Summary of the results:
+Upper trail:
+Rounds  x                 y         l         z         pr     
+----------------------------------------------------------------
+0       0000200008008808  00002000  00002202  00008808  -8     
+1       0000000800002000  0000000A  0000A000  00002000  -4     
+2       0000000000000008  00000000  00000000  00000000  -0     
+3       0000080000000000  none      none      none      none   
+Weight: -12.00
+###########################
+Sandwich 4 rounds in the middle with 11 active S-boxes
+###########################
+Lower trail:
+Rounds  x                 y         l         z         pr     
+----------------------------------------------------------------
+0       0000010000000010  00000100  00000010  00000010  -4     
+1       0000000000000100  00000000  00000000  00000000  -0     
+2       0001000000000000  00010000  10000000  10000000  -4     
+3       0000001000010000  00000010  00001011  00001011  -8     
+4       0110110000000010  none      none      none      none   
+Weight: -16.00
+---------------------------
+differential effect of the upper trail: 2^(-12.00)
+differential effect of the lower trail: 2^(-16.00)
+Total probability = p^2*q^2*r = 2^(-24.00) x 2^(-32.00) x r
+2^(-83.50) <= Total probability <= 2^(-78.00)
+To compute the accurate value of total probability, r should be evaluated experimentally or using the (F)BCT framework
+
+========================================================================
+搜索后的概率实验
+
+------------------------------------------------------------------------
+上路径差分概率测试
+mode          : diff
+rounds        : 3
+input diff    : 0000200008008808
+output diff   : 0000080000000000 (L_r||R_r)
+trials        : 1
+data size     : 2^(14)
+trial 0001: right=14 total=2^(14) probability=0.0008544921875
+------------------------------------------------------------------------
+aggregate right pairs/quartets : 14
+aggregate total pairs/quartets : 2^(14)
+estimated probability          : 0.0008544921875
+log2(probability)              : -10.192645
+
+------------------------------------------------------------------------
+下路径差分概率测试
+mode          : diff
+data size     : 2^(18)
+skip reason   : data size 2^(18) >= 2^(16); skip test
+
+------------------------------------------------------------------------
+Em 中间 boomerang switch 概率测试
+mode          : boomerang switch
+scope         : Em only
+rounds        : 4
+input diff    : 0000080000000000 (Delta from upper output)
+output diff   : 0000010000000010 (nabla from lower input)
+common active : 11
+data size     : 2^(24)
+skip reason   : data size 2^(24) >= 2^(16); skip test

@@ -1,0 +1,56 @@
+
+========================================================================
+搜索后的概率实验
+
+------------------------------------------------------------------------
+上路径差分概率测试
+mode          : diff
+rounds        : 2
+input diff    : 0000000200002000
+output diff   : 0000020000000000 (L_r||R_r)
+trials        : 1
+data size     : 2^(6)
+trial 0001: right=12 total=2^(6) probability=0.1875
+------------------------------------------------------------------------
+aggregate right pairs/quartets : 12
+aggregate total pairs/quartets : 2^(6)
+estimated probability          : 0.1875
+log2(probability)              : -2.415037
+
+------------------------------------------------------------------------
+下路径差分概率测试
+mode          : diff
+rounds        : 2
+input diff    : 0000000002000000
+output diff   : 0020000000000002 (L_r||R_r)
+trials        : 1
+data size     : 2^(6)
+trial 0001: right=9 total=2^(6) probability=0.140625
+------------------------------------------------------------------------
+aggregate right pairs/quartets : 9
+aggregate total pairs/quartets : 2^(6)
+estimated probability          : 0.140625
+log2(probability)              : -2.830075
+
+------------------------------------------------------------------------
+Em 中间 boomerang switch 概率测试
+mode          : boomerang switch
+scope         : Em only
+rounds        : 3
+input diff    : 0000020000000000 (Delta from upper output)
+output diff   : 0000000002000000 (nabla from lower input)
+common active : 1
+data size     : 2^(12)
+trial 0001: returned=528 total=2^(12) probability=0.12890625
+------------------------------------------------------------------------
+aggregate returned quartets     : 528
+aggregate total quartets        : 2^(12)
+estimated probability           : 0.12890625
+log2(probability)               : -2.955606
+Hadipour interval log2          : [-2.50, -2.00]
+
+------------------------------------------------------------------------
+整个 boomerang 区分器实验概率
+formula       : p^2 * r * q^2
+result        : 2^(-13.445831)
+probability   : 8.96193087101e-05

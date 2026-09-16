@@ -1,0 +1,42 @@
+{
+  "parameters": {
+    "nrounds": 2,
+    "mode": 0,
+    "direction": "forward",
+    "startweight": 0,
+    "endweight": 128,
+    "timelimit": 120,
+    "numberoftrails": 1,
+    "fixedVariables": {}
+  },
+  "status": "OPTIMAL",
+  "elapsed_seconds": 0.18774389999452978,
+  "lp_file": "tmp\\boomerang\\splight_h_diff_3304_1789042287340.lp",
+  "trail": {
+    "x_0": "0004000040000000",
+    "y_0": "00040000",
+    "l_0": "40000000",
+    "rk_0": "00000000",
+    "ak_0": "40000000",
+    "z_0": "40000000",
+    "pr_0": "-4",
+    "x_1": "0000000000040000",
+    "y_1": "00000000",
+    "l_1": "00000000",
+    "rk_1": "00000000",
+    "ak_1": "00000000",
+    "z_1": "00000000",
+    "pr_1": "-0",
+    "x_2": "0400000000000000",
+    "y_2": "none",
+    "l_2": "none",
+    "rk_2": "none",
+    "ak_2": "none",
+    "z_2": "none",
+    "pr_2": "none",
+    "total_weight": "4.00",
+    "nrounds": 2,
+    "round_offset": 0
+  },
+  "differential_effect_log2": null
+}
