@@ -49,4 +49,4 @@
 
     python run/probtest_from_results.py --result-dir .\results\2-3-2_636
 
-脚本不构建 truncated MILP、Diff MILP 或 Z3。若存在成功的 exact_summary.json，则使用被它指定的 accepted upper/lower JSON；否则读取正式 case JSON。输出写入 probability_results/<case>/，包含 terminal_print.txt、probability_tests.txt 和 summary.json。
+脚本不构建 truncated MILP、Diff MILP 或 Z3。若存在成功的 exact_summary.json，则使用被它指定的 accepted upper/lower JSON；否则读取正式 case JSON。输出写入 probability_results/<case>/，包含 terminal_print.txt、`<r0>-<rm>-<r1>_probtest.txt`、`<r0>-<rm>-<r1>_prob.md` 和 summary.json。

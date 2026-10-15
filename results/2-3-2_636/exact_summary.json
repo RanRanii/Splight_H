@@ -10,7 +10,7 @@
       "truncated_id": 1,
       "raw_truncated_id": 1,
       "result": "SAT",
-      "elapsed_seconds": 0.46899999992456287,
+      "elapsed_seconds": 0.3600000000005821,
       "upper": {
         "result": "SAT",
         "candidate_count": 1,
@@ -26,7 +26,7 @@
           "round_offset": 0,
           "milp_status": "OPTIMAL",
           "smt_status": "SAT",
-          "verification_time_seconds": 0.06283629999961704,
+          "verification_time_seconds": 0.03628549999848474,
           "reason": null,
           "nogood_constraint": null,
           "fixed_diffs": {
@@ -124,7 +124,7 @@
           "round_offset": 5,
           "milp_status": "OPTIMAL",
           "smt_status": "SAT",
-          "verification_time_seconds": 0.12013049994129688,
+          "verification_time_seconds": 0.09764609999547247,
           "reason": null,
           "nogood_constraint": null,
           "fixed_diffs": {

@@ -15,12 +15,12 @@ input diff    : 0000000200002000
 output diff   : 0000020000000000 (L_r||R_r)
 trials        : 1
 data size     : 2^(6)
-trial 0001: right=12 total=2^(6) probability=0.1875
+trial 0001: right=6 total=2^(6) probability=0.09375
 ------------------------------------------------------------------------
-aggregate right pairs/quartets : 12
+aggregate right pairs/quartets : 6
 aggregate total pairs/quartets : 2^(6)
-estimated probability          : 0.1875
-log2(probability)              : -2.415037
+estimated probability          : 0.09375
+log2(probability)              : -3.415037
 
 ------------------------------------------------------------------------
 下路径差分概率测试
@@ -30,12 +30,12 @@ input diff    : 0000000002000000
 output diff   : 0020000000000002 (L_r||R_r)
 trials        : 1
 data size     : 2^(6)
-trial 0001: right=9 total=2^(6) probability=0.140625
+trial 0001: right=3 total=2^(6) probability=0.046875
 ------------------------------------------------------------------------
-aggregate right pairs/quartets : 9
+aggregate right pairs/quartets : 3
 aggregate total pairs/quartets : 2^(6)
-estimated probability          : 0.140625
-log2(probability)              : -2.830075
+estimated probability          : 0.046875
+log2(probability)              : -4.415037
 
 ------------------------------------------------------------------------
 Em 中间 boomerang switch 概率测试
@@ -46,17 +46,18 @@ input diff    : 0000020000000000 (Delta from upper output)
 output diff   : 0000000002000000 (nabla from lower input)
 common active : 1
 data size     : 2^(12)
-trial 0001: returned=528 total=2^(12) probability=0.12890625
+trial 0001: returned=495 total=2^(12) probability=0.120849609375
 ------------------------------------------------------------------------
-aggregate returned quartets     : 528
+aggregate returned quartets     : 495
 aggregate total quartets        : 2^(12)
-estimated probability           : 0.12890625
-log2(probability)               : -2.955606
+estimated probability           : 0.120849609375
+log2(probability)               : -3.048715
 Hadipour interval log2          : [-2.50, -2.00]
 
 ------------------------------------------------------------------------
 整个 boomerang 区分器实验概率
 formula       : p^2 * r * q^2
-result        : 2^(-13.445831)
-probability   : 8.96193087101e-05
+result        : 2^(-18.708865)
+probability   : 2.33383616433e-06
 Saved: E:\Codex_project\Feistel-Boomerang自动化搜索\Test\Splight-H\probability_results\2-3-2_636\summary.json
+Saved: E:\Codex_project\Feistel-Boomerang自动化搜索\Test\Splight-H\probability_results\2-3-2_636\2-3-2_prob.md

@@ -81,6 +81,14 @@ class _FakeTruncatedModel:
             },
         }
 
+    def print_truncated_solution(self, _activity):
+        print("Upper Truncated Trail:")
+        print(f"fake upper path {self.position}")
+        print("Lower Truncated Trail:")
+        print(f"fake lower path {self.position}")
+        print("Middle Part:")
+        print(f"fake middle path {self.position}")
+
     def add_truncated_path_nogood(self, _snapshot, name):
         self.added.append(name)
         return name
@@ -118,7 +126,97 @@ def _sat_result(side):
     }
 
 
-def test_outer_loop_reuses_truncated_model_after_concrete_exhaustion(tmp_path, monkeypatch):
+def test_instantiation_lp_cleaner_only_deletes_registered_current_run_files(tmp_path):
+    root = tmp_path / "boomerang"
+    root.mkdir()
+    historical = root / "splight_h_diff_100_1000.lp"
+    historical.write_text("historical", encoding="utf-8")
+    current = root / "splight_h_diff_200_2000.lp"
+    current.write_text("current", encoding="utf-8")
+    outside = tmp_path / "splight_h_diff_300_3000.lp"
+    outside.write_text("outside", encoding="utf-8")
+
+    cleaner = boom._InstantiationLpCleaner(root=root)
+    historical_diff = type(
+        "Diff", (), {"lp_file_name": str(historical), "milp_model": None}
+    )()
+    current_diff = type(
+        "Diff", (), {"lp_file_name": str(current), "milp_model": None}
+    )()
+    outside_diff = type(
+        "Diff", (), {"lp_file_name": str(outside), "milp_model": None}
+    )()
+
+    assert cleaner.register(current_diff) is True
+    assert cleaner.register(outside_diff) is False
+    assert cleaner.delete(historical_diff, "must_not_touch_history") is False
+    assert cleaner.delete(current_diff, "definitively_rejected") is True
+
+    assert historical.exists()
+    assert outside.exists()
+    assert not current.exists()
+    snapshot = cleaner.snapshot()
+    assert snapshot["registered_files"] == 1
+    assert snapshot["deleted_files"] == 1
+    assert snapshot["deleted_bytes"] == len("current")
+    assert snapshot["refused_files"] == 1
+
+
+def test_raw_rejected_candidate_deletes_both_new_instantiation_lps(
+    tmp_path, monkeypatch
+):
+    root = tmp_path / "boomerang"
+    root.mkdir()
+    historical = root / "splight_h_diff_999_9999.lp"
+    historical.write_text("historical", encoding="utf-8")
+    cleaner = boom._InstantiationLpCleaner(root=root)
+    created_paths = []
+    model = _FakeTruncatedModel()
+    model.position = 1
+
+    def one_raw_candidate(**_kwargs):
+        if model.position == 1:
+            model.position = 2
+            return {"status": "OPTIMAL", "solution": {"raw": 1}}
+        return {"status": "INFEASIBLE", "solution": None}
+
+    model.optimize_next_truncated_path = one_raw_candidate
+    model.extract_current_truncated_path = lambda: {
+        "signature": [("activity_1", 1)],
+        "activity": {"upper_trail": {}, "middle_part": {}, "lower_trail": {}},
+    }
+    monkeypatch.setattr(boom, "_prepare_truncated_model", lambda _params: model)
+
+    def builder(_bm, _snapshot, _params, side, _deadline):
+        index = len(created_paths) + 1
+        path = root / f"splight_h_diff_123_{index}.lp"
+        path.write_text(side, encoding="utf-8")
+        created_paths.append(path)
+        diff = _FakeDiff()
+        diff.lp_file_name = str(path)
+        diff.milp_model = None
+        if side == "lower":
+            diff.optimize_next_candidate = lambda **_kwargs: {
+                "status": "INFEASIBLE",
+                "solution": None,
+            }
+        return diff, [], {}
+
+    monkeypatch.setattr(boom, "_build_diff_for_truncated_side", builder)
+    result = boom._run_exact_two_level_search(
+        _exact_params(), tmp_path / "results", None, lp_cleaner=cleaner
+    )
+
+    assert result["result"] == "NO_EXACT_REALIZABLE_TRAIL"
+    assert result["instantiation_lp_cleanup"]["deleted_files"] == 2
+    assert result["instantiation_lp_cleanup"]["retained_registered_files"] == 0
+    assert historical.exists()
+    assert all(not path.exists() for path in created_paths)
+
+
+def test_outer_loop_reuses_truncated_model_after_concrete_exhaustion(
+    tmp_path, monkeypatch, capsys
+):
     model = _FakeTruncatedModel()
     monkeypatch.setattr(boom, "_prepare_truncated_model", lambda _params: model)
     monkeypatch.setattr(
@@ -142,6 +240,22 @@ def test_outer_loop_reuses_truncated_model_after_concrete_exhaustion(tmp_path, m
     assert model.added == ["truncated_nogood_0001"]
     assert (tmp_path / "truncated_0001").is_dir()
     assert (tmp_path / "truncated_0002").is_dir()
+    output = capsys.readouterr().out
+    assert output.count("Upper Truncated Trail:") == 2
+    assert output.count("Lower Truncated Trail:") == 2
+    assert output.count("Middle Part:") == 2
+    markers = [
+        "Qualified truncated path #1",
+        "fake upper path 1",
+        "fake lower path 1",
+        "fake middle path 1",
+        "Qualified truncated path #2",
+        "fake upper path 2",
+        "fake lower path 2",
+        "fake middle path 2",
+    ]
+    positions = [output.index(marker) for marker in markers]
+    assert positions == sorted(positions)
 
 
 def test_outer_loop_marks_timeout_skipped_without_concrete_nogood(tmp_path, monkeypatch):

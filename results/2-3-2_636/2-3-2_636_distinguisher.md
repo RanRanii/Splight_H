@@ -1,5 +1,15 @@
 # Splight-H 区分器 r0=2, rm=3, r1=2
 
+## Boomerang 概率预估
+
+```text
+differential effect of the upper trail: 2^(-4.00)
+differential effect of the lower trail: 2^(-4.00)
+Total probability = p^2*q^2*r = 2^(-8.00) x 2^(-8.00) x r
+2^(-18.50) <= Total probability <= 2^(-18.00)
+To compute the accurate value of total probability, r should be evaluated experimentally or using the (F)BCT framework
+```
+
 ```mermaid
 flowchart LR
   P["输入差分\n0000000200002000"] --> E0["E0：2 轮\n上差分路径"]

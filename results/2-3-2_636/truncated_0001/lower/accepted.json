@@ -6,7 +6,7 @@
   "round_offset": 5,
   "milp_status": "OPTIMAL",
   "smt_status": "SAT",
-  "verification_time_seconds": 0.12013049994129688,
+  "verification_time_seconds": 0.09764609999547247,
   "reason": null,
   "nogood_constraint": null,
   "fixed_diffs": {

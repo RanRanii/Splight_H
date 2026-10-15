@@ -88,7 +88,7 @@ python run/probtest_from_results.py --result-dir .\results\2-3-2_636
 python run/probtest_from_results.py --result-dir .\results\2-3-2_636 --seed 20260909
 ```
 
-如果存在成功的 exact_summary.json，脚本优先读取其中指定的 upper/accepted.json 和 lower/accepted.json；否则兼容旧版正式 case JSON。输出位于 probability_results/<case>/。
+如果存在成功的 exact_summary.json，脚本优先读取其中指定的 upper/accepted.json 和 lower/accepted.json；否则兼容旧版正式 case JSON。输出位于 probability_results/<case>/，其中 `<r0>-<rm>-<r1>_prob.md` 是概率汇总，`<r0>-<rm>-<r1>_probtest.txt` 是完整实验日志。
 
 ## Full 结果入口
 
@@ -110,7 +110,7 @@ results/<r0>-<rm>-<r1>_<w0><wm><w1>/
 
 - terminal_print.txt：完整终端输出。
 - <case>.json、<case>.txt：正式搜索结果。
-- <case>_distinguisher.md、bmd.tex：区分器文档。
+- <case>_distinguisher.md、bmd.tex：区分器文档；Markdown 开头包含理论 boomerang 概率预估。
 - upper_diff_trail.*、lower_diff_trail.*：最终具体差分路径。
 - exact_summary.json：exact 双层搜索全局结果。
 - truncated_XXXX/：一条 upper/lower 均通过首次 MILP 实例化的联合截断路径。

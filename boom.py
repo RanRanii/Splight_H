@@ -15,8 +15,10 @@ import contextlib
 import io
 import json
 import os
+import re
 import sys
 import time
+import traceback
 from pathlib import Path
 from typing import Any
 
@@ -30,6 +32,114 @@ from tools.exact_verify import verify_trail
 
 
 PROJECT_DIR = Path(__file__).resolve().parent
+
+
+class _InstantiationLpCleaner:
+    """Delete only rejected Diff LP files created and registered in this run."""
+
+    _LP_NAME = re.compile(r"splight_h_diff_\d+_\d+\.lp")
+
+    def __init__(self, root: str | os.PathLike[str] | None = None) -> None:
+        default_root = PROJECT_DIR / "tmp" / "boomerang"
+        self.root = os.path.realpath(root or default_root)
+        self._owned: dict[str, tuple[int, int, int, int]] = {}
+        self._stats = {
+            "policy": "delete-definitively-rejected-current-run-only",
+            "registered_files": 0,
+            "deleted_files": 0,
+            "deleted_bytes": 0,
+            "refused_files": 0,
+            "delete_failures": 0,
+        }
+
+    def _resolve_safe_path(self, diff: Any) -> str | None:
+        raw_path = getattr(diff, "lp_file_name", None)
+        if not raw_path:
+            return None
+        path = os.path.realpath(raw_path)
+        try:
+            inside_root = os.path.commonpath((self.root, path)) == self.root
+        except ValueError:
+            inside_root = False
+        if not inside_root or self._LP_NAME.fullmatch(os.path.basename(path)) is None:
+            return None
+        return path
+
+    @staticmethod
+    def _file_identity(stat_result: os.stat_result) -> tuple[int, int, int, int]:
+        return (
+            stat_result.st_dev,
+            stat_result.st_ino,
+            stat_result.st_size,
+            stat_result.st_mtime_ns,
+        )
+
+    def register(self, diff: Any) -> bool:
+        """Register a new LP explicitly; historical unregistered files stay untouched."""
+        path = self._resolve_safe_path(diff)
+        if path is None:
+            if getattr(diff, "lp_file_name", None):
+                self._stats["refused_files"] += 1
+                print(f"LP cleanup registration refused: {diff.lp_file_name}")
+            return False
+        try:
+            stat_result = os.stat(path)
+        except OSError as exc:
+            self._stats["refused_files"] += 1
+            print(f"LP cleanup registration failed: path={path} error={exc}")
+            return False
+        self._owned[path] = self._file_identity(stat_result)
+        self._stats["registered_files"] += 1
+        return True
+
+    def delete(self, diff: Any, reason: str) -> bool:
+        """Delete a registered LP only if it is still the registered file."""
+        path = self._resolve_safe_path(diff)
+        if path is None or path not in self._owned:
+            return False
+        registered_identity = self._owned[path]
+        try:
+            current_stat = os.stat(path)
+            if self._file_identity(current_stat) != registered_identity:
+                self._stats["refused_files"] += 1
+                print(f"LP cleanup refused changed file: path={path} reason={reason}")
+                return False
+
+            model = getattr(diff, "milp_model", None)
+            dispose = getattr(model, "dispose", None)
+            if callable(dispose):
+                dispose()
+            if hasattr(diff, "milp_model"):
+                diff.milp_model = None
+
+            os.remove(path)
+            self._owned.pop(path, None)
+            self._stats["deleted_files"] += 1
+            self._stats["deleted_bytes"] += current_stat.st_size
+            return True
+        except FileNotFoundError:
+            self._owned.pop(path, None)
+            return False
+        except OSError as exc:
+            self._stats["delete_failures"] += 1
+            print(f"LP cleanup warning: path={path} reason={reason} error={exc}")
+            return False
+
+    def delete_many(self, diffs: list[Any] | tuple[Any, ...], reason: str) -> dict[str, int]:
+        deleted_before = self._stats["deleted_files"]
+        bytes_before = self._stats["deleted_bytes"]
+        for diff in diffs:
+            self.delete(diff, reason)
+        return {
+            "deleted_files": self._stats["deleted_files"] - deleted_before,
+            "deleted_bytes": self._stats["deleted_bytes"] - bytes_before,
+        }
+
+    def snapshot(self) -> dict[str, Any]:
+        return {
+            **self._stats,
+            "retained_registered_files": len(self._owned),
+        }
 
 
 class _TeeTextStream(io.TextIOBase):
@@ -361,6 +471,10 @@ def _refine_diff_until_exact_sat(
     path_deadline: float | None,
 ) -> dict[str, Any]:
     if diff is None:
+        print(
+            f"\n{side.capitalize()} instantiated differential trail: "
+            "0-round side; no concrete instantiation required"
+        )
         return {
             "result": "SAT",
             "candidate_count": 0,
@@ -419,6 +533,8 @@ def _refine_diff_until_exact_sat(
                     "accepted": None,
                     "model_inconsistency": payload,
                 }
+            print(f"\nAccepted {side} instantiated differential trail:\n")
+            Diff.print_trail(extracted["characteristic"])
             payload = _candidate_payload(
                 extracted, smt, truncated_id=truncated_id,
                 candidate_id=candidate_id, side=side
@@ -505,6 +621,7 @@ def _run_exact_two_level_search(
     params: dict[str, Any],
     result_dir: Path,
     deadline: float | None,
+    lp_cleaner: _InstantiationLpCleaner | None = None,
 ) -> dict[str, Any]:
     print("=" * 60)
     print("Exact verification enabled: two-level truncated/concrete search")
@@ -515,6 +632,25 @@ def _run_exact_two_level_search(
     timeout_paths = 0
     truncated_search_stopped_incomplete = False
     paths: list[dict[str, Any]] = []
+    lp_cleaner = lp_cleaner or _InstantiationLpCleaner()
+
+    def finish_result(payload: dict[str, Any]) -> dict[str, Any]:
+        cleanup = lp_cleaner.snapshot()
+        payload["instantiation_lp_cleanup"] = cleanup
+        summary = payload.get("summary")
+        if isinstance(summary, dict):
+            summary["instantiation_lp_cleanup"] = cleanup
+            _write_json(result_dir / "exact_summary.json", summary)
+        print(
+            "Instantiation LP cleanup: "
+            f"registered={cleanup['registered_files']} "
+            f"deleted={cleanup['deleted_files']} "
+            f"deleted_bytes={cleanup['deleted_bytes']} "
+            f"retained={cleanup['retained_registered_files']} "
+            f"refused={cleanup['refused_files']} "
+            f"failures={cleanup['delete_failures']}"
+        )
+        return payload
 
     while True:
         if _remaining_seconds(deadline) == 0:
@@ -535,6 +671,8 @@ def _run_exact_two_level_search(
         lower, lower_expected, _ = _build_diff_for_truncated_side(
             bm, snapshot, params, "lower", deadline
         )
+        lp_cleaner.register(upper)
+        lp_cleaner.register(lower)
         upper_first = (
             {"status": "OPTIMAL"}
             if upper is None
@@ -560,6 +698,15 @@ def _run_exact_two_level_search(
                 f"not counted in results, add {name}"
             )
             bm.add_truncated_path_nogood(snapshot, name)
+            cleanup = lp_cleaner.delete_many(
+                tuple(diff for diff in (upper, lower) if diff is not None),
+                reason=f"raw_truncated_candidate_{raw_id}_rejected",
+            )
+            print(
+                "Instantiation LP cleanup for raw rejection: "
+                f"deleted={cleanup['deleted_files']} "
+                f"deleted_bytes={cleanup['deleted_bytes']}"
+            )
             continue
         if not _has_milp_solution(upper_first) or not _has_milp_solution(lower_first):
             global_summary = {
@@ -570,7 +717,10 @@ def _run_exact_two_level_search(
                 "truncated_paths": paths,
             }
             _write_json(result_dir / "exact_summary.json", global_summary)
-            return {"result": "SEARCH_INCOMPLETE_TIMEOUT", "summary": global_summary}
+            return finish_result({
+                "result": "SEARCH_INCOMPLETE_TIMEOUT",
+                "summary": global_summary,
+            })
 
         truncated_id += 1
         path_dir = result_dir / f"truncated_{truncated_id:04d}"
@@ -583,6 +733,15 @@ def _run_exact_two_level_search(
             f"\nQualified truncated path #{truncated_id} "
             f"(raw candidate #{raw_id})"
         )
+        print(f"Truncated MILP status : {raw_status.get('status', 'UNKNOWN')}")
+        if raw_status.get("objective") is not None:
+            print(f"Truncated objective   : {raw_status['objective']}")
+        if raw_status.get("elapsed_seconds") is not None:
+            print(
+                "Truncated MILP time    : "
+                f"{float(raw_status['elapsed_seconds']):.6f} seconds"
+            )
+        bm.print_truncated_solution(snapshot["activity"])
         path_started = time.monotonic()
         path_deadline = (
             path_started + params["exact_path_timeout_sec"]
@@ -621,19 +780,35 @@ def _run_exact_two_level_search(
                 "exact_verify_enabled": True,
                 "result": "SAT",
                 "accepted_truncated_id": truncated_id,
-                "accepted_weight_upper": upper_result["accepted"]["weight"],
-                "accepted_weight_lower": lower_result["accepted"]["weight"],
+                "accepted_weight_upper": (
+                    upper_result["accepted"]["weight"]
+                    if upper_result["accepted"] is not None
+                    else 0.0
+                ),
+                "accepted_weight_lower": (
+                    lower_result["accepted"]["weight"]
+                    if lower_result["accepted"] is not None
+                    else 0.0
+                ),
                 "truncated_paths_tested": truncated_id,
                 "truncated_paths": paths,
             }
             _write_json(result_dir / "exact_summary.json", global_summary)
-            return {
+            return finish_result({
                 "result": "SAT",
-                "upper": upper_result["accepted"]["characteristic"],
-                "lower": lower_result["accepted"]["characteristic"],
+                "upper": (
+                    upper_result["accepted"]["characteristic"]
+                    if upper_result["accepted"] is not None
+                    else None
+                ),
+                "lower": (
+                    lower_result["accepted"]["characteristic"]
+                    if lower_result["accepted"] is not None
+                    else None
+                ),
                 "snapshot": snapshot,
                 "summary": global_summary,
-            }
+            })
 
         results = [upper_result]
         if lower_result is not None:
@@ -668,13 +843,37 @@ def _run_exact_two_level_search(
                 "truncated_paths": paths,
             }
             _write_json(result_dir / "exact_summary.json", global_summary)
-            return {"result": "MODEL_INCONSISTENCY", "summary": global_summary}
+            return finish_result({
+                "result": "MODEL_INCONSISTENCY",
+                "summary": global_summary,
+            })
         if path_result == "TIMEOUT_SKIPPED":
             timeout_paths += 1
         no_good = f"truncated_nogood_{truncated_id:04d}"
         bm.add_truncated_path_nogood(snapshot, no_good)
         summary["truncated_nogood"] = no_good
         _save_path_summary(path_dir, summary)
+        cleanup_targets: list[Any] = []
+        if upper_result["result"] == "CONCRETE_EXHAUSTED":
+            if upper is not None:
+                cleanup_targets.append(upper)
+            if lower_result is None and lower is not None:
+                cleanup_targets.append(lower)
+        if (
+            lower_result is not None
+            and lower_result["result"] == "CONCRETE_EXHAUSTED"
+            and lower is not None
+        ):
+            cleanup_targets.append(lower)
+        cleanup = lp_cleaner.delete_many(
+            cleanup_targets,
+            reason=f"truncated_candidate_{truncated_id}_{path_result}",
+        )
+        print(
+            f"Instantiation LP cleanup for truncated #{truncated_id}: "
+            f"deleted={cleanup['deleted_files']} "
+            f"deleted_bytes={cleanup['deleted_bytes']}"
+        )
 
     result = (
         "SEARCH_INCOMPLETE_TIMEOUT"
@@ -693,49 +892,83 @@ def _run_exact_two_level_search(
         "truncated_paths": paths,
     }
     _write_json(result_dir / "exact_summary.json", global_summary)
-    return {"result": result, "summary": global_summary}
+    return finish_result({"result": result, "summary": global_summary})
 
 
 def _run_legacy_search(
     params: dict[str, Any],
     deadline: float | None,
 ) -> dict[str, Any]:
+    timing = {
+        "truncated_search_seconds": None,
+        "upper_instantiation_seconds": None,
+        "lower_instantiation_seconds": None,
+    }
     bm = _prepare_truncated_model(params)
-    status = bm.optimize_next_truncated_path(
+    truncated_started = time.monotonic()
+    status = bm.find_truncated_boomerang_trail(
         time_limit_override=_effective_time_limit(params, deadline)
     )
+    timing["truncated_search_seconds"] = time.monotonic() - truncated_started
+    print(
+        "Truncated trail search time: "
+        f"{timing['truncated_search_seconds']:.6f} seconds"
+    )
     if not _has_milp_solution(status):
-        return {"result": status.get("status", "INFEASIBLE")}
+        return {
+            "result": status.get("status", "INFEASIBLE"),
+            "timing": timing,
+        }
+    bm.parse_solver_output()
     snapshot = bm.extract_current_truncated_path()
+
+    upper_started = time.monotonic()
     upper, _, _ = _build_diff_for_truncated_side(
         bm, snapshot, params, "upper", deadline
     )
+    upper_trail = None
+    if upper is not None:
+        upper_trail = upper.find_characteristic(
+            time_limit_override=_effective_time_limit(params, deadline)
+        )
+    timing["upper_instantiation_seconds"] = time.monotonic() - upper_started
+    print(
+        "Upper Diff instantiation time: "
+        f"{timing['upper_instantiation_seconds']:.6f} seconds"
+    )
+    if upper is not None and upper_trail is None:
+        return {
+            "result": upper.last_solve_status or "UPPER_DIFF_STOPPED",
+            "upper_status": upper.last_solve_status,
+            "timing": timing,
+        }
+
+    lower_started = time.monotonic()
     lower, _, _ = _build_diff_for_truncated_side(
         bm, snapshot, params, "lower", deadline
     )
-    upper_status = (
-        {"status": "OPTIMAL"} if upper is None
-        else upper.optimize_next_candidate(
+    lower_trail = None
+    if lower is not None:
+        lower_trail = lower.find_characteristic(
             time_limit_override=_effective_time_limit(params, deadline)
         )
+    timing["lower_instantiation_seconds"] = time.monotonic() - lower_started
+    print(
+        "Lower Diff instantiation time: "
+        f"{timing['lower_instantiation_seconds']:.6f} seconds"
     )
-    lower_status = (
-        {"status": "OPTIMAL"} if lower is None
-        else lower.optimize_next_candidate(
-            time_limit_override=_effective_time_limit(params, deadline)
-        )
-    )
-    if not _has_milp_solution(upper_status) or not _has_milp_solution(lower_status):
+    if lower is not None and lower_trail is None:
         return {
-            "result": "CONCRETE_INFEASIBLE",
-            "upper_status": upper_status,
-            "lower_status": lower_status,
+            "result": lower.last_solve_status or "LOWER_DIFF_STOPPED",
+            "lower_status": lower.last_solve_status,
+            "timing": timing,
         }
     return {
         "result": "SAT",
-        "upper": upper.parse_solver_output() if upper else None,
-        "lower": lower.parse_solver_output() if lower else None,
+        "upper": upper_trail,
+        "lower": lower_trail,
         "snapshot": snapshot,
+        "timing": timing,
     }
 
 
@@ -747,7 +980,10 @@ def _save_formal_results(
     exact_summary: dict[str, Any] | None,
     truncated_snapshot: dict[str, Any] | None,
 ) -> dict[str, Any] | None:
-    if upper is None or lower is None:
+    if (
+        (upper is None and int(params["r0"]) != 0)
+        or (lower is None and int(params["r1"]) != 0)
+    ):
         return None
     snapshot = exact_summary.get("truncated_paths", []) if exact_summary else []
     path_snapshot = None
@@ -772,8 +1008,8 @@ def _save_formal_results(
         "lower_trail": activity.get("lower_trail", {}),
         "diff_upper_trail": upper,
         "diff_lower_trail": lower,
-        "diff_effect_upper_log2": -float(upper["total_weight"]),
-        "diff_effect_lower_log2": -float(lower["total_weight"]),
+        "diff_effect_upper_log2": -float(upper["total_weight"]) if upper else 0.0,
+        "diff_effect_lower_log2": -float(lower["total_weight"]) if lower else 0.0,
         "exact_summary": exact_summary,
     }
     case_name = result_case_dir_name(params)
@@ -791,12 +1027,18 @@ def _save_formal_results(
             "exact_summary": exact_summary,
         },
     )
-    (result_dir / "upper_diff_trail.txt").write_text(
-        _trail_markdown("Upper differential trail", upper), encoding="utf-8"
+    upper_text = (
+        _trail_markdown("Upper differential trail", upper)
+        if upper is not None
+        else "# Upper differential trail\n\n0-round side; no concrete instantiation required.\n"
     )
-    (result_dir / "lower_diff_trail.txt").write_text(
-        _trail_markdown("Lower differential trail", lower), encoding="utf-8"
+    lower_text = (
+        _trail_markdown("Lower differential trail", lower)
+        if lower is not None
+        else "# Lower differential trail\n\n0-round side; no concrete instantiation required.\n"
     )
+    (result_dir / "upper_diff_trail.txt").write_text(upper_text, encoding="utf-8")
+    (result_dir / "lower_diff_trail.txt").write_text(lower_text, encoding="utf-8")
     (result_dir / f"{case_name}.txt").write_text(
         _truncated_markdown({"activity": activity, "weight": None}),
         encoding="utf-8",
@@ -829,20 +1071,31 @@ def _print_search_summary(
 ) -> None:
     middle = (snapshot or {}).get("activity", {}).get("middle_part", {})
     common = int(middle.get("as", 0))
-    upper_log2 = -float(upper["total_weight"])
-    lower_log2 = -float(lower["total_weight"])
-    print("\n" + "#" * 27)
+    upper_log2 = -float(upper["total_weight"]) if upper is not None else 0.0
+    lower_log2 = -float(lower["total_weight"]) if lower is not None else 0.0
+    print("\n" + "=" * 60)
+    print(
+        f"Boomerang distinguisher for "
+        f"{params['r0']} + {params['rm']} + {params['r1']} "
+    )
+    print("#" * 60)
     print("Summary of the results:")
     print("Upper trail:")
-    Diff.print_trail(upper)
-    print("#" * 27)
+    if upper is None:
+        print("0-round side; no concrete instantiation required")
+    else:
+        Diff.print_trail(upper)
+    print("#" * 60)
     print(f"Sandwich {params['rm']} rounds in the middle with {common} active S-boxes")
-    print("#" * 27)
+    print("#" * 60)
     print("Lower trail:")
-    Diff.print_trail(lower)
+    if lower is None:
+        print("0-round side; no concrete instantiation required")
+    else:
+        Diff.print_trail(lower)
     print("-" * 27)
-    print(f"differential characteristic of the upper trail: 2^({upper_log2:.2f})")
-    print(f"differential characteristic of the lower trail: 2^({lower_log2:.2f})")
+    print(f"differential effect of the upper trail: 2^({upper_log2:.2f})")
+    print(f"differential effect of the lower trail: 2^({lower_log2:.2f})")
     print(
         "Total probability = p^2*q^2*r = "
         f"2^({2 * upper_log2:.2f}) x 2^({2 * lower_log2:.2f}) x r"
@@ -852,6 +1105,10 @@ def _print_search_summary(
         f"Total probability <= "
         f"2^({2 * upper_log2 + 2 * lower_log2 - 2 * common:.2f})"
     )
+    print(
+        "To compute the accurate value of total probability, r should be "
+        "evaluated experimentally or using the (F)BCT framework"
+    )
 
 
 def _run_search(params: dict[str, Any], result_dir: Path) -> dict[str, Any]:
@@ -860,20 +1117,17 @@ def _run_search(params: dict[str, Any], result_dir: Path) -> dict[str, Any]:
         started + params["global_tl"] if params["global_tl"] is not None else None
     )
     print("=" * 72)
-    print("Splight same-key boomerang/sandwich distinguisher search")
+    print("Search time limits")
+    print(f"single MILP optimize : {params['timelimit']:g} seconds")
     print(
-        f"Parameters: r0={params['r0']}, rm={params['rm']}, r1={params['r1']}, "
-        f"w0={params['w0']}, wm={params['wm']}, w1={params['w1']}"
-    )
-    print(f"Per-MILP time limit: {params['timelimit']} seconds")
-    print(
-        "Global search time limit: "
+        "global search       : "
         + (
             f"{params['global_tl']} seconds"
             if params["global_tl"] is not None
             else "unlimited"
         )
     )
+    print("probability test     : excluded from global search time")
     if params["exact_verify"]:
         output = _run_exact_two_level_search(params, result_dir, deadline)
     else:
@@ -888,7 +1142,6 @@ def _run_search(params: dict[str, Any], result_dir: Path) -> dict[str, Any]:
             output.get("summary"),
             output.get("snapshot"),
         )
-        print("\nAccepted upper/lower differential trails saved.")
         _print_search_summary(
             params,
             output["upper"],
@@ -903,10 +1156,6 @@ def _run_search(params: dict[str, Any], result_dir: Path) -> dict[str, Any]:
             _write_json(result_dir / "probability_summary.json", probability_result)
     else:
         print(f"\nSearch result: {output.get('result')}")
-    print(
-        "\nTo compute the accurate value of total probability, r should be "
-        "evaluated experimentally or using the (F)BCT framework"
-    )
     print(f"Total solving time: {time.monotonic() - started:.6f} seconds")
     return output
 
@@ -959,7 +1208,17 @@ def main_for_result_root(
     params = loadparameters(args)
     result_dir = PROJECT_DIR / result_root_name / result_case_dir_name(params)
     with _tee_terminal_output(result_dir / "terminal_print.txt"):
-        output = _run_search(params, result_dir)
+        started = time.monotonic()
+        try:
+            output = _run_search(params, result_dir)
+            print(f"Results saved in {result_dir.resolve()}")
+        except BaseException:
+            traceback.print_exc()
+            print(
+                "Total solving time before failure: "
+                f"{time.monotonic() - started:.6f} seconds"
+            )
+            return 1
     return 0 if output.get("result") == "SAT" else 1
 
 

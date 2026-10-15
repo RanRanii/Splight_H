@@ -1,23 +1,93 @@
 ========================================================================
-Splight same-key boomerang/sandwich distinguisher search
-Parameters: r0=2, rm=3, r1=2, w0=6, wm=3, w1=6
-Per-MILP time limit: 1200.0 seconds
-Global search time limit: unlimited
+Search time limits
+single MILP optimize : 1200 seconds
+global search       : unlimited
+probability test     : excluded from global search time
+============================================================
+Exact verification enabled: two-level truncated/concrete search
+============================================================
 Set parameter Username
 Academic license - for non-commercial use only - expires 2026-10-10
 Read LP format model from file tmp\splight_h_2_3_2.lp
-Reading time = 0.02 seconds
+Reading time = 0.01 seconds
 : 826 rows, 480 columns, 1980 nonzeros
-Read LP format model from file tmp\boomerang\splight_h_diff_17612_1789542787355.lp
+Read LP format model from file tmp\boomerang\splight_h_diff_18620_1789567131881.lp
 Reading time = 0.01 seconds
 : 1692 rows, 480 columns, 7424 nonzeros
-Read LP format model from file tmp\boomerang\splight_h_diff_17612_1789542787383.lp
+Read LP format model from file tmp\boomerang\splight_h_diff_18620_1789567131900.lp
 Reading time = 0.01 seconds
 : 1692 rows, 480 columns, 7424 nonzeros
 
-Accepted upper/lower differential trails saved.
+Qualified truncated path #1 (raw candidate #1)
+Truncated MILP status : OPTIMAL
+Truncated objective   : 27.0
+Truncated MILP time    : 0.137963 seconds
 
-###########################
+Upper Truncated Trail:
+
+Rounds  x                 y         l         z        
+--------------------------------------------------------
+0       0000000100001000  00000001  00001000  00001000 
+1       0000000000000001  00000000  00000000  00000000 
+2       0000010000000000  00000100  00000010  00000010 
+3       0000100000000100  00001000  00001101  00001101 
+4       0011010000001000  00110100  10110010  10110010 
+5       1110101000110100  none      none      none     
+
+++++++++++++++++
+################
+Lower Truncated Trail:
+
+Rounds  x                 y         l         z        
+--------------------------------------------------------
+0       1011000011111000  10110000  11110000  11110000 
+1       0010000010110000  00100000  10110000  10110000 
+2       0100000000100000  01000000  00100000  00100000 
+3       0000000001000000  00000000  00000000  00000000 
+4       0000000100000000  00000001  00001000  00001000 
+5       0010000000000001  none      none      none     
+
+################
+################
+Middle Part:
+
+0*0*0*0*0*0*0*0*0*0*0*0*0*0*0*0*
+0*0*0*0*0*0*0*0*0*0*0*0*0*0*0*0*
+0*0*0*0*0*0*0*0*0*0*1*0*0*0*0*0*
+
+Number of common active S-boxes: 1
+
+Upper exact candidate #1
+MILP weight : 4.0
+SMT status  : SAT
+Replay      : PASS
+
+Accepted upper instantiated differential trail:
+
+Rounds  x                 y         l         RK        ak        z         pr     
+----------------------------------------------------------------------------------
+0       0000000200002000  00000002  00002000  00000000  00002000  00002000  -4     
+1       0000000000000002  00000000  00000000  00000000  00000000  00000000  -0     
+2       0000020000000000  none      none      none      none      none      none   
+Weight: -4.00
+
+Lower exact candidate #1
+MILP weight : 4.0
+SMT status  : SAT
+Replay      : PASS
+
+Accepted lower instantiated differential trail:
+
+Rounds  x                 y         l         RK        ak        z         pr     
+----------------------------------------------------------------------------------
+0       0000000002000000  00000000  00000000  00000000  00000000  00000000  -0     
+1       0000000200000000  00000002  00002000  00000000  00002000  00002000  -4     
+2       0020000000000002  none      none      none      none      none      none   
+Weight: -4.00
+
+============================================================
+Boomerang distinguisher for 2 + 3 + 2 
+############################################################
 Summary of the results:
 Upper trail:
 Rounds  x                 y         l         RK        ak        z         pr     
@@ -26,9 +96,9 @@ Rounds  x                 y         l         RK        ak        z         pr
 1       0000000000000002  00000000  00000000  00000000  00000000  00000000  -0     
 2       0000020000000000  none      none      none      none      none      none   
 Weight: -4.00
-###########################
+############################################################
 Sandwich 3 rounds in the middle with 1 active S-boxes
-###########################
+############################################################
 Lower trail:
 Rounds  x                 y         l         RK        ak        z         pr     
 ----------------------------------------------------------------------------------
@@ -37,10 +107,66 @@ Rounds  x                 y         l         RK        ak        z         pr
 2       0020000000000002  none      none      none      none      none      none   
 Weight: -4.00
 ---------------------------
-differential characteristic of the upper trail: 2^(-4.00)
-differential characteristic of the lower trail: 2^(-4.00)
+differential effect of the upper trail: 2^(-4.00)
+differential effect of the lower trail: 2^(-4.00)
 Total probability = p^2*q^2*r = 2^(-8.00) x 2^(-8.00) x r
 2^(-18.50) <= Total probability <= 2^(-18.00)
-
 To compute the accurate value of total probability, r should be evaluated experimentally or using the (F)BCT framework
-Total solving time: 0.359000 seconds
+
+========================================================================
+搜索后的概率实验
+
+------------------------------------------------------------------------
+上路径差分概率测试
+mode          : diff
+rounds        : 2
+input diff    : 0000000200002000
+output diff   : 0000020000000000 (L_r||R_r)
+trials        : 1
+data size     : 2^(6)
+trial 0001: right=8 total=2^(6) probability=0.125
+------------------------------------------------------------------------
+aggregate right pairs/quartets : 8
+aggregate total pairs/quartets : 2^(6)
+estimated probability          : 0.125
+log2(probability)              : -3.000000
+
+------------------------------------------------------------------------
+下路径差分概率测试
+mode          : diff
+rounds        : 2
+input diff    : 0000000002000000
+output diff   : 0020000000000002 (L_r||R_r)
+trials        : 1
+data size     : 2^(6)
+trial 0001: right=12 total=2^(6) probability=0.1875
+------------------------------------------------------------------------
+aggregate right pairs/quartets : 12
+aggregate total pairs/quartets : 2^(6)
+estimated probability          : 0.1875
+log2(probability)              : -2.415037
+
+------------------------------------------------------------------------
+Em 中间 boomerang switch 概率测试
+mode          : boomerang switch
+scope         : Em only
+rounds        : 3
+input diff    : 0000020000000000 (Delta from upper output)
+output diff   : 0000000002000000 (nabla from lower input)
+common active : 1
+data size     : 2^(12)
+trial 0001: returned=513 total=2^(12) probability=0.125244140625
+------------------------------------------------------------------------
+aggregate returned quartets     : 513
+aggregate total quartets        : 2^(12)
+estimated probability           : 0.125244140625
+log2(probability)               : -2.997185
+Hadipour interval log2          : [-2.50, -2.00]
+
+------------------------------------------------------------------------
+整个 boomerang 区分器实验概率
+formula       : p^2 * r * q^2
+result        : 2^(-13.827260)
+probability   : 6.8798661232e-05
+Total solving time: 0.937000 seconds
+Results saved in E:\Codex_project\Feistel-Boomerang自动化搜索\Test\Splight-H\results\2-3-2_636

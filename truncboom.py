@@ -214,19 +214,20 @@ class TruncatedBoomerang:
         self.milp_model.Params.PoolSolutions = 10
         return self.optimize_next_truncated_path(output_flag=False)
 
-    def find_truncated_boomerang_trail(self):
+    def find_truncated_boomerang_trail(self, time_limit_override=None):
         """Reference-compatible solver entry used by boom.py."""
         if read is None:
             raise RuntimeError("gurobipy is required to solve the MILP")
-        self.make_model()
-        self.load_model()
-        self.milp_model.setParam(GRB.Param.OutputFlag, True)
-        if self.time_limit is not None:
-            self.milp_model.Params.TimeLimit = self.time_limit
+        if self.milp_model is None:
+            self.make_model()
+            self.load_model()
         self.milp_model.Params.PoolSearchMode = 2
         self.milp_model.Params.PoolSolutions = 10
         self.milp_model.Params.SolutionNumber = 0
-        result = self.optimize_next_truncated_path(output_flag=True)
+        result = self.optimize_next_truncated_path(
+            output_flag=True,
+            time_limit_override=time_limit_override,
+        )
         if result["solution"] is not None:
             print(f"Number of active S-boxes: {result['objective']}")
         else:
@@ -339,9 +340,8 @@ class TruncatedBoomerang:
         middle["as"] = common_count
         return {"upper_trail": upper_trail, "middle_part": middle, "lower_trail": lower_trail}
 
-    def parse_solver_output(self):
-        """Reference-compatible solution parser and printer."""
-        parsed = self.parse_solution()
+    def print_truncated_solution(self, parsed):
+        """Print one extracted truncated path without re-reading the model."""
         self.upper_trail = parsed.get("upper_trail", {})
         self.middle_part = parsed.get("middle_part", {})
         self.lower_trail = parsed.get("lower_trail", {})
@@ -376,6 +376,10 @@ class TruncatedBoomerang:
             print("*".join(value) + "*" if value else "")
         print(f"\nNumber of common active S-boxes: {self.middle_part.get('as', 0)}")
         return self.upper_trail, self.middle_part, self.lower_trail
+
+    def parse_solver_output(self):
+        """Extract and print the current truncated solution."""
+        return self.print_truncated_solution(self.parse_solution())
 
     def save_result(self, path):
         data = self.solution or {"lp_file": self.lp_file_name}
